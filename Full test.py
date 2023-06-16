@@ -43,13 +43,10 @@ class Text():
 class Question():
     def __init__(self):
         self.a=0
-        self.question=[("#use modulus to find the remainder when a=7 and is divided by 3","a=7"),("%","=","4"),("1") ]
+        self.question=[["#use modulus to find the remainder when a=7 and is divided by 3","a=7"],["%","=","3"],["1"] ]
         self.row_limit=len(self.question[0])
         self.question_comments=self.question[0]
-    def insert_self_code(self,code):
-        for i in self.question[0]:
-            code+=i
-        return code
+        self.checkers=self.question[1]
     def execute(self,code,str):
         a=0
         for row in code:
@@ -57,31 +54,39 @@ class Question():
             str+=row
         str+="\n    return a"
         str+="\na()"
-        print(str)
         str+=""
         try:
             a=exec_with_return(str)
-            check=self.check_code(a)
-            if check==True:
-                return "reset_question"
-            return a
+            check=self.check_code(a,str)
+            return check
         except Exception as e:
-            print(e)
             return e
-    def check_code(self,a):
-        if str(a)==str(self.question[2]):
-            return True
+    def check_code(self,a,code_str):
+        for i in self.checkers:
+            if i not in code_str :
+                return a
+        if [str(a)]==self.question[2]:
+            return "check passed"
+    def reset(self,new_question):
+        print(new_question)
+        self.question=[(new_question[0]),(new_question[1]),(new_question[2])]
+        print(self.question)
+        self.row_limit=len(self.question[0])
+        self.question_comments=self.question[0]
+        self.checkers=self.question[1]
         
-code_str="""def a():\n"""
+        
+
+question_array=[["#use the exponential operator to the power of to bring a to the power of 5","a=2"],["**"],["32"]]
+
 text=Text()
 question=Question()
 user_text=[]
+code_str="""def a():\n"""
 for i in range(question.row_limit):
     user_text+=[question.question_comments[i]]
 user_text+=[""]
 user_row=question.row_limit
-a=exec_with_return("""def a():\n    a=16\n    return a\na()""")
-print(a)
 first=[("#use modulus to find the remainder when a=7 and is divided by 3","a=7"),("%","=","4"),("1") ]
 while True:
     for event in pygame.event.get():
@@ -106,9 +111,23 @@ while True:
                     user_text[user_row]+="      "
                 elif button_press==pygame.K_ESCAPE:
                     text.render(display,str(question.execute(user_text,code_str)),screen_width/8,screen_height/7*6,20, (255,0,0))
+                    check=question.execute(user_text,code_str)
+                    if check=="check passed":
+                        question.reset(question_array)
+                        user_text=[]
+                        code_str="""def a():\n"""
+                        for i in range(question.row_limit):
+                            user_text+=[question.question_comments[i]]
+                        user_text+=[""]
+                        user_row=question.row_limit
+                        print(question.question)
                 elif button_press==pygame.K_HASH:
-                    user_text=[""]
-                    user_row=0
+                    user_text=[]
+                    code_str="""def a():\n"""
+                    for i in range(question.row_limit):
+                        user_text+=[question.question_comments[i]]
+                    user_text+=[""]
+                    user_row=question.row_limit
                 if (button_press!=pygame.K_RETURN) and (button_press!=pygame.K_BACKSPACE) and (button_press!=pygame.K_TAB) and( button_press!=pygame.K_ESCAPE) and button_press!=pygame.K_HASH:
                     button_press=event.unicode
                     user_text[user_row]+=button_press
