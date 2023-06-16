@@ -6,6 +6,7 @@ import os
 from subprocess import run
 from exec import exec_with_return 
 import sys
+import random
 
 
 pygame.init()
@@ -43,7 +44,7 @@ class Text():
 class Question():
     def __init__(self):
         self.a=0
-        self.question=[["#use modulus to find the remainder when a=7 and is divided by 3","a=7"],["%","=","3"],["1"] ]
+        self.question=[["#use modulus to find the remainder when a=7 and is divided by 3","a=7"],["%","=","3"],["1"]]
         self.row_limit=len(self.question[0])
         self.question_comments=self.question[0]
         self.checkers=self.question[1]
@@ -77,7 +78,13 @@ class Question():
         
         
 
-question_array=[["#use the exponential operator to the power of to bring a to the power of 5","a=2"],["**"],["32"]]
+question_array=[
+    [["#use the exponential operator to bring a to the power of 5","a=2"],["**","5"],["32"]],
+    [["#use modulus to find the remainder when a=7 and is divided by 3","a=7"],["%","=","3"],["1"]],
+    [["#use floor division to divide a by 3 when a=11","a=11"],["//","3"],["4"]],
+    [["#use addition to add 5 to a when a=7","a=7"],["+","5"],["12"]],
+    [["#use subtraction to subtract 8 when a=11","a=11"],["-","8"],["3"]]
+    ]
 
 text=Text()
 question=Question()
@@ -113,7 +120,7 @@ while True:
                     text.render(display,str(question.execute(user_text,code_str)),screen_width/8,screen_height/7*6,20, (255,0,0))
                     check=question.execute(user_text,code_str)
                     if check=="check passed":
-                        question.reset(question_array)
+                        question.reset(question_array[random.randint(0,1)])
                         user_text=[]
                         code_str="""def a():\n"""
                         for i in range(question.row_limit):
