@@ -1,3 +1,3 @@
-a="hello"
-if "he" in a:
-    print("Hello")
+def func(a,v):
+    print(a,v)
+func((1,2))
